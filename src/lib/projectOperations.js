@@ -139,15 +139,18 @@ export async function fetchTasks(projectId) {
 
 export async function fetchTaskDetail(taskId) {
   const client = getSupabaseOrThrow()
-  const [taskResult, checklistResult, updatesResult] = await Promise.all([
+  const [taskResult, checklistResult, updatesResult, attachmentsResult, inspectionsResult, punchItemsResult] = await Promise.all([
     client.from('construction_tasks').select('*, project:projects(name), project_area:project_areas(name), stage:construction_stages(name)').eq('id', taskId).single(),
     client.from('task_checklist_items').select('*').eq('task_id', taskId).order('sort_order').order('created_at'),
     client.from('task_updates').select('*').eq('task_id', taskId).order('created_at', { ascending: false }),
+    client.from('task_attachments').select('*').eq('task_id', taskId).order('created_at', { ascending: false }),
+    client.from('inspections').select('*').eq('task_id', taskId).order('created_at', { ascending: false }),
+    client.from('punch_list_items').select('*').eq('task_id', taskId).order('created_at', { ascending: false }),
   ])
   if (taskResult.error) throw taskResult.error
   if (checklistResult.error) throw checklistResult.error
   if (updatesResult.error) throw updatesResult.error
-  return { task: taskResult.data, checklist: checklistResult.data ?? [], updates: updatesResult.data ?? [] }
+  return { task: taskResult.data, checklist: checklistResult.data ?? [], updates: updatesResult.data ?? [], attachments: attachmentsResult.error ? [] : attachmentsResult.data ?? [], inspections: inspectionsResult.error ? [] : inspectionsResult.data ?? [], punchItems: punchItemsResult.error ? [] : punchItemsResult.data ?? [] }
 }
 
 export async function createTask({ workspaceId, projectId, userId, task, checklistItems = [] }) {
@@ -231,10 +234,11 @@ export async function fetchWorkspaceStages(workspaceId) {
 
 export async function fetchContractorDashboard(userId) {
   const client = getSupabaseOrThrow()
-  const [tasksResult, updatesResult] = await Promise.all([
+  const [tasksResult, updatesResult, punchResult] = await Promise.all([
     client.from('construction_tasks').select('*, project:projects(name), stage:construction_stages(name)').eq('assigned_to', userId).order('due_date', { ascending: true, nullsFirst: false }),
     client.from('task_updates').select('*, task:construction_tasks!inner(title, assigned_to, project:projects(name))').eq('task.assigned_to', userId).order('created_at', { ascending: false }).limit(8),
+    client.from('punch_list_items').select('*, project:projects(name)').eq('assigned_to', userId).order('due_date', { ascending: true, nullsFirst: false }),
   ])
   if (tasksResult.error) throw tasksResult.error
-  return { tasks: tasksResult.data ?? [], updates: updatesResult.error ? [] : updatesResult.data ?? [] }
+  return { tasks: tasksResult.data ?? [], updates: updatesResult.error ? [] : updatesResult.data ?? [], punchItems: punchResult.error ? [] : punchResult.data ?? [] }
 }

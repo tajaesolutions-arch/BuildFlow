@@ -15,6 +15,10 @@ import { ProjectDetail } from './pages/ProjectDetail'
 import { ProjectStructure } from './pages/ProjectStructure'
 import { ProjectStages } from './pages/ProjectStages'
 import { ProjectTasks } from './pages/ProjectTasks'
+import { ProjectInspections } from './pages/ProjectInspections'
+import { InspectionDetail } from './pages/InspectionDetail'
+import { ProjectPunchList } from './pages/ProjectPunchList'
+import { PunchListDetail } from './pages/PunchListDetail'
 import {
   ClientDashboard,
   ContractorDashboard,
@@ -51,6 +55,10 @@ export default function App() {
           <Route path="/projects/:id/structure" element={<ProtectedRoute allowedRoles={[ROLES.COMPANY_ADMIN, ROLES.DIRECTOR, ROLES.HEAD_PROJECT_MANAGER, ROLES.PROJECT_MANAGER, ROLES.QA_INSPECTOR, ROLES.CONTRACTOR, ROLES.SITE_SUPERVISOR, ROLES.CLIENT_OWNER_VIEWER, ROLES.ACCOUNTANT_COST_CONTROLLER, ROLES.SAFETY_OFFICER]}><ProjectStructure /></ProtectedRoute>} />
           <Route path="/projects/:id/stages" element={<ProtectedRoute allowedRoles={[ROLES.COMPANY_ADMIN, ROLES.DIRECTOR, ROLES.HEAD_PROJECT_MANAGER, ROLES.PROJECT_MANAGER, ROLES.QA_INSPECTOR, ROLES.CONTRACTOR, ROLES.SITE_SUPERVISOR, ROLES.CLIENT_OWNER_VIEWER, ROLES.ACCOUNTANT_COST_CONTROLLER, ROLES.SAFETY_OFFICER]}><ProjectStages /></ProtectedRoute>} />
           <Route path="/projects/:id/tasks" element={<ProtectedRoute allowedRoles={[ROLES.COMPANY_ADMIN, ROLES.DIRECTOR, ROLES.HEAD_PROJECT_MANAGER, ROLES.PROJECT_MANAGER, ROLES.QA_INSPECTOR, ROLES.CONTRACTOR, ROLES.SITE_SUPERVISOR, ROLES.CLIENT_OWNER_VIEWER, ROLES.ACCOUNTANT_COST_CONTROLLER, ROLES.SAFETY_OFFICER]}><ProjectTasks /></ProtectedRoute>} />
+          <Route path="/projects/:id/inspections" element={<ProtectedRoute allowedRoles={[ROLES.COMPANY_ADMIN, ROLES.DIRECTOR, ROLES.HEAD_PROJECT_MANAGER, ROLES.PROJECT_MANAGER, ROLES.QA_INSPECTOR, ROLES.CONTRACTOR, ROLES.SITE_SUPERVISOR, ROLES.CLIENT_OWNER_VIEWER, ROLES.ACCOUNTANT_COST_CONTROLLER, ROLES.SAFETY_OFFICER]}><ProjectInspections /></ProtectedRoute>} />
+          <Route path="/projects/:id/inspections/:inspectionId" element={<ProtectedRoute allowedRoles={[ROLES.COMPANY_ADMIN, ROLES.DIRECTOR, ROLES.HEAD_PROJECT_MANAGER, ROLES.PROJECT_MANAGER, ROLES.QA_INSPECTOR, ROLES.CONTRACTOR, ROLES.SITE_SUPERVISOR, ROLES.CLIENT_OWNER_VIEWER, ROLES.ACCOUNTANT_COST_CONTROLLER, ROLES.SAFETY_OFFICER]}><InspectionDetail /></ProtectedRoute>} />
+          <Route path="/projects/:id/punch-list" element={<ProtectedRoute allowedRoles={[ROLES.COMPANY_ADMIN, ROLES.DIRECTOR, ROLES.HEAD_PROJECT_MANAGER, ROLES.PROJECT_MANAGER, ROLES.QA_INSPECTOR, ROLES.CONTRACTOR, ROLES.SITE_SUPERVISOR, ROLES.CLIENT_OWNER_VIEWER, ROLES.ACCOUNTANT_COST_CONTROLLER, ROLES.SAFETY_OFFICER]}><ProjectPunchList /></ProtectedRoute>} />
+          <Route path="/projects/:id/punch-list/:punchListItemId" element={<ProtectedRoute allowedRoles={[ROLES.COMPANY_ADMIN, ROLES.DIRECTOR, ROLES.HEAD_PROJECT_MANAGER, ROLES.PROJECT_MANAGER, ROLES.QA_INSPECTOR, ROLES.CONTRACTOR, ROLES.SITE_SUPERVISOR, ROLES.CLIENT_OWNER_VIEWER, ROLES.ACCOUNTANT_COST_CONTROLLER, ROLES.SAFETY_OFFICER]}><PunchListDetail /></ProtectedRoute>} />
           <Route path="*" element={<AppRedirect />} />
         </Routes>
       </AuthProvider>

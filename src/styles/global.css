@@ -137,3 +137,7 @@ textarea:focus { outline: 3px solid rgba(27,153,139,.2); border-color: var(--tea
 }
 .manager-edit-grid { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 10px; margin: 12px 0; }
 @media (max-width: 860px) { .manager-edit-grid { grid-template-columns: 1fr; } }
+.quality-table .table-head, .quality-table .table-row { grid-template-columns: 1.4fr .8fr .8fr 1fr 1.2fr .9fr; }
+.photo-upload-hint { color: var(--muted); font-size: .86rem; }
+@media (max-width: 1180px) { .quality-table .table-row { grid-template-columns: 1fr 1fr; } }
+@media (max-width: 860px) { .quality-table .table-row { grid-template-columns: 1fr; } }
