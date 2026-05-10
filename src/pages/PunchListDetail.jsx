@@ -1,0 +1,31 @@
+import { useEffect, useState } from 'react'
+import { Link, useParams } from 'react-router-dom'
+import { AppLayout } from '../components/AppLayout'
+import { EmptyState } from '../components/EmptyState'
+import { StatusBadge } from '../components/StatusBadge'
+import { useAuth } from '../contexts/AuthContext'
+import { addAttachmentMetadata, addPunchUpdate, canManageQuality, canUpdateAssignedPunch, fetchPunchDetail, PUNCH_STATUSES, updatePunchItem } from '../lib/qualityControl'
+
+export function PunchListDetail() {
+  const { id, punchListItemId } = useParams()
+  const { user, workspaceContext } = useAuth()
+  const role = workspaceContext?.role
+  const [detail, setDetail] = useState(null)
+  const [note, setNote] = useState('')
+  const [photo, setPhoto] = useState({ fileName: '', filePath: '', attachmentType: 'correction_photo' })
+  const [error, setError] = useState(null)
+  async function load() { setDetail(await fetchPunchDetail(punchListItemId)) }
+  useEffect(() => { load().catch((err) => setError(err.message)) }, [punchListItemId])
+  const item = detail?.item
+  const canManage = canManageQuality(role)
+  const canContractorUpdate = canUpdateAssignedPunch(role, item, user?.id)
+  const allowedStatuses = canManage ? PUNCH_STATUSES : canContractorUpdate ? ['in_progress', 'ready_for_reinspection'] : []
+  async function setStatus(status) { try { await updatePunchItem({ workspaceId: item.workspace_id, projectId: item.project_id, userId: user.id, itemId: item.id, patch: { status } }); await load() } catch (err) { setError(err.message) } }
+  async function addNote(event) { event.preventDefault(); if (!note.trim()) return; try { await addPunchUpdate({ workspaceId: item.workspace_id, projectId: item.project_id, userId: user.id, itemId: item.id, message: note, updateType: 'note' }); setNote(''); await load() } catch (err) { setError(err.message) } }
+  async function addPhoto(event) { event.preventDefault(); try { await addAttachmentMetadata({ workspaceId: item.workspace_id, projectId: item.project_id, userId: user.id, attachment: { ...photo, punchListItemId, fileType: 'image', attachmentType: photo.attachmentType } }); setPhoto({ fileName: '', filePath: '', attachmentType: 'correction_photo' }); await load() } catch (err) { setError(err.message) } }
+
+  return <AppLayout title={item?.title || 'Punch list item'} eyebrow="Defect detail">
+    <section className="page-actions"><Link className="secondary-button" to={`/projects/${id}/punch-list`}>Back to punch list</Link><Link className="secondary-button" to={`/projects/${id}/inspections`}>Inspections</Link></section>{error && <div className="notice error">{error}</div>}
+    {!detail ? <p>Loading punch item…</p> : <div className="page-stack"><section className="dashboard-grid"><article className="card hero-card"><p className="eyebrow">Defect / rework</p><h2>{item.title}</h2><p>{item.description || 'No description provided.'}</p><div className="chip-list"><StatusBadge value={item.status} /><StatusBadge value={item.priority} /><span>{item.project_area?.name || 'No area'}</span><span>{item.task?.title || 'No linked task'}</span><span>Due {item.due_date || 'not set'}</span><span>Assigned {item.assigned_to?.slice(0, 8) || item.assigned_company || 'unassigned'}</span></div>{allowedStatuses.length ? <div className="page-actions"><select value={item.status} onChange={(e) => setStatus(e.target.value)}>{allowedStatuses.map((status) => <option key={status} value={status}>{status.replaceAll('_', ' ')}</option>)}</select>{canManage && <><button className="secondary-button" onClick={() => setStatus('passed')}>Pass reinspection</button><button className="secondary-button" onClick={() => setStatus('failed')}>Fail reinspection</button><button className="primary-button" onClick={() => setStatus('closed')}>Close item</button></>}</div> : null}</article><article className="card"><h3>Important permissions</h3><p>Contractors can add notes, upload correction photos, and move assigned items to in progress or ready for reinspection. They cannot mark defects passed or closed.</p></article></section><section className="dashboard-grid"><article className="card"><h2>Defect & correction photos</h2>{detail.attachments.length ? detail.attachments.map((attachment) => <div className="compact-row" key={attachment.id}><span>{attachment.file_name}</span><StatusBadge value={attachment.attachment_type} /></div>) : <EmptyState title="No photos yet" message="Photos are stored in a private bucket and controlled by RLS-backed metadata." />}{(canManage || canContractorUpdate) && <form className="form-grid one-column" onSubmit={addPhoto}><label>Type<select value={photo.attachmentType} onChange={(e) => setPhoto({ ...photo, attachmentType: e.target.value })}><option value="defect_photo">Defect photo</option><option value="correction_photo">Correction photo</option></select></label><label>File name<input required value={photo.fileName} onChange={(e) => setPhoto({ ...photo, fileName: e.target.value })} /></label><label>Private storage path<input required value={photo.filePath} onChange={(e) => setPhoto({ ...photo, filePath: e.target.value })} placeholder={`${user.id}/${item.project_id}/correction-photo.jpg`} /></label><button className="secondary-button">Add photo metadata</button></form>}</article><article className="card"><h2>Updates / notes</h2>{(canManage || canContractorUpdate) && <form className="note-form" onSubmit={addNote}><textarea value={note} onChange={(e) => setNote(e.target.value)} placeholder="Add a correction note, site update, or reinspection comment" /><button className="secondary-button">Add note</button></form>}{detail.updates.length ? detail.updates.map((update) => <div className="compact-row" key={update.id}><span>{update.message}</span><small>{new Date(update.created_at).toLocaleString()}</small></div>) : <EmptyState title="No updates yet" message="Correction and reinspection history will appear here." />}</article></section><section className="card"><h2>Activity history</h2>{detail.activity.length ? detail.activity.map((entry) => <div className="compact-row" key={entry.id}><span>{entry.action.replaceAll('_', ' ')}</span><small>{new Date(entry.created_at).toLocaleString()}</small></div>) : <EmptyState title="No activity yet" message="Punch list workflow actions will be logged here." />}</section></div>}
+  </AppLayout>
+}

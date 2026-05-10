@@ -12,7 +12,7 @@ const baseNav = [
   { label: 'Team / Contractors', to: '/projects', roles: ['company_admin', 'director', 'head_project_manager', 'project_manager'] },
   { label: 'Reports', to: '/dashboard', roles: ['company_admin', 'director', 'head_project_manager', 'project_manager'] },
   { label: 'Settings', to: '/dashboard', roles: ['company_admin', 'director', 'head_project_manager', 'project_manager'] },
-  { label: 'QA', to: '/qa-dashboard', roles: ['qa_inspector'] },
+  { label: 'QA Dashboard', to: '/qa-dashboard', roles: ['qa_inspector'] },
   { label: 'Contractor Dashboard', to: '/contractor-dashboard', roles: ['contractor'] },
   { label: 'My Tasks', to: '/projects', roles: ['contractor'] },
   { label: 'Task Updates', to: '/contractor-dashboard', roles: ['contractor'] },
@@ -28,7 +28,7 @@ const baseNav = [
   { label: 'Platform Admin', to: '/admin', roles: ['platform_admin'] },
 ]
 
-const placeholders = ['QA', 'Documents', 'Daily Reports', 'Financials', 'Notifications', 'AI']
+const placeholders = ['Documents', 'Daily Reports', 'Financials', 'Notifications', 'AI']
 
 export function AppLayout({ children, title, eyebrow }) {
   const navigate = useNavigate()
