@@ -4,17 +4,31 @@ import { canCreateProject, ROLE_LABELS } from '../lib/roles'
 import { useAuth } from '../contexts/AuthContext'
 
 const baseNav = [
-  { label: 'Overview', to: '/dashboard', roles: ['company_admin', 'director', 'head_project_manager', 'project_manager'] },
+  { label: 'Dashboard', to: '/dashboard', roles: ['company_admin', 'director', 'head_project_manager', 'project_manager'] },
+  { label: 'Projects', to: '/projects', roles: ['company_admin', 'director', 'head_project_manager', 'project_manager', 'qa_inspector', 'site_supervisor', 'accountant_cost_controller', 'safety_officer'] },
+  { label: 'Tasks', to: '/projects', roles: ['company_admin', 'director', 'head_project_manager', 'project_manager'] },
+  { label: 'Stages', to: '/projects', roles: ['company_admin', 'director', 'head_project_manager', 'project_manager'] },
+  { label: 'Project Structure', to: '/projects', roles: ['company_admin', 'director', 'head_project_manager', 'project_manager'] },
+  { label: 'Team / Contractors', to: '/projects', roles: ['company_admin', 'director', 'head_project_manager', 'project_manager'] },
+  { label: 'Reports', to: '/dashboard', roles: ['company_admin', 'director', 'head_project_manager', 'project_manager'] },
+  { label: 'Settings', to: '/dashboard', roles: ['company_admin', 'director', 'head_project_manager', 'project_manager'] },
   { label: 'QA', to: '/qa-dashboard', roles: ['qa_inspector'] },
-  { label: 'Contractor', to: '/contractor-dashboard', roles: ['contractor'] },
+  { label: 'Contractor Dashboard', to: '/contractor-dashboard', roles: ['contractor'] },
+  { label: 'My Tasks', to: '/projects', roles: ['contractor'] },
+  { label: 'Task Updates', to: '/contractor-dashboard', roles: ['contractor'] },
+  { label: 'Notifications', to: '/contractor-dashboard', roles: ['contractor'] },
   { label: 'Site', to: '/site-dashboard', roles: ['site_supervisor'] },
   { label: 'Costs', to: '/cost-dashboard', roles: ['accountant_cost_controller'] },
   { label: 'Safety', to: '/safety-dashboard', roles: ['safety_officer'] },
-  { label: 'Client View', to: '/client-dashboard', roles: ['client_owner_viewer'] },
+  { label: 'Client Dashboard', to: '/client-dashboard', roles: ['client_owner_viewer'] },
+  { label: 'Progress', to: '/projects', roles: ['client_owner_viewer'] },
+  { label: 'Reports', to: '/client-dashboard', roles: ['client_owner_viewer'] },
+  { label: 'Photos', to: '/client-dashboard', roles: ['client_owner_viewer'] },
+  { label: 'Handover', to: '/client-dashboard', roles: ['client_owner_viewer'] },
   { label: 'Platform Admin', to: '/admin', roles: ['platform_admin'] },
 ]
 
-const placeholders = ['Tasks', 'Inspections', 'Punch Lists', 'Documents', 'Daily Reports', 'Approvals']
+const placeholders = ['QA', 'Documents', 'Daily Reports', 'Financials', 'Notifications', 'AI']
 
 export function AppLayout({ children, title, eyebrow }) {
   const navigate = useNavigate()
@@ -41,7 +55,7 @@ export function AppLayout({ children, title, eyebrow }) {
         </div>
         <nav className="sidebar-nav" aria-label="Primary navigation">
           {visibleNav.map((item) => (
-            <NavLink key={item.to} to={item.to}>{item.label}</NavLink>
+            <NavLink key={`${item.label}-${item.to}`} to={item.to}>{item.label}</NavLink>
           ))}
           {canCreateProject(role) && <NavLink to="/projects/new">Add Project</NavLink>}
         </nav>

@@ -10,6 +10,11 @@ import { WorkspaceSetup } from './pages/WorkspaceSetup'
 import { Suspended } from './pages/Suspended'
 import { NoWorkspace } from './pages/NoWorkspace'
 import { NewProject } from './pages/NewProject'
+import { Projects } from './pages/Projects'
+import { ProjectDetail } from './pages/ProjectDetail'
+import { ProjectStructure } from './pages/ProjectStructure'
+import { ProjectStages } from './pages/ProjectStages'
+import { ProjectTasks } from './pages/ProjectTasks'
 import {
   ClientDashboard,
   ContractorDashboard,
@@ -40,7 +45,12 @@ export default function App() {
           <Route path="/cost-dashboard" element={<ProtectedRoute allowedRoles={[ROLES.ACCOUNTANT_COST_CONTROLLER]}><CostDashboard /></ProtectedRoute>} />
           <Route path="/safety-dashboard" element={<ProtectedRoute allowedRoles={[ROLES.SAFETY_OFFICER]}><SafetyDashboard /></ProtectedRoute>} />
           <Route path="/client-dashboard" element={<ProtectedRoute allowedRoles={[ROLES.CLIENT_OWNER_VIEWER]}><ClientDashboard /></ProtectedRoute>} />
+          <Route path="/projects" element={<ProtectedRoute allowedRoles={[ROLES.COMPANY_ADMIN, ROLES.DIRECTOR, ROLES.HEAD_PROJECT_MANAGER, ROLES.PROJECT_MANAGER, ROLES.QA_INSPECTOR, ROLES.CONTRACTOR, ROLES.SITE_SUPERVISOR, ROLES.CLIENT_OWNER_VIEWER, ROLES.ACCOUNTANT_COST_CONTROLLER, ROLES.SAFETY_OFFICER]}><Projects /></ProtectedRoute>} />
           <Route path="/projects/new" element={<ProtectedRoute allowedRoles={[ROLES.COMPANY_ADMIN, ROLES.DIRECTOR, ROLES.HEAD_PROJECT_MANAGER, ROLES.PROJECT_MANAGER]}><NewProject /></ProtectedRoute>} />
+          <Route path="/projects/:id" element={<ProtectedRoute allowedRoles={[ROLES.COMPANY_ADMIN, ROLES.DIRECTOR, ROLES.HEAD_PROJECT_MANAGER, ROLES.PROJECT_MANAGER, ROLES.QA_INSPECTOR, ROLES.CONTRACTOR, ROLES.SITE_SUPERVISOR, ROLES.CLIENT_OWNER_VIEWER, ROLES.ACCOUNTANT_COST_CONTROLLER, ROLES.SAFETY_OFFICER]}><ProjectDetail /></ProtectedRoute>} />
+          <Route path="/projects/:id/structure" element={<ProtectedRoute allowedRoles={[ROLES.COMPANY_ADMIN, ROLES.DIRECTOR, ROLES.HEAD_PROJECT_MANAGER, ROLES.PROJECT_MANAGER, ROLES.QA_INSPECTOR, ROLES.CONTRACTOR, ROLES.SITE_SUPERVISOR, ROLES.CLIENT_OWNER_VIEWER, ROLES.ACCOUNTANT_COST_CONTROLLER, ROLES.SAFETY_OFFICER]}><ProjectStructure /></ProtectedRoute>} />
+          <Route path="/projects/:id/stages" element={<ProtectedRoute allowedRoles={[ROLES.COMPANY_ADMIN, ROLES.DIRECTOR, ROLES.HEAD_PROJECT_MANAGER, ROLES.PROJECT_MANAGER, ROLES.QA_INSPECTOR, ROLES.CONTRACTOR, ROLES.SITE_SUPERVISOR, ROLES.CLIENT_OWNER_VIEWER, ROLES.ACCOUNTANT_COST_CONTROLLER, ROLES.SAFETY_OFFICER]}><ProjectStages /></ProtectedRoute>} />
+          <Route path="/projects/:id/tasks" element={<ProtectedRoute allowedRoles={[ROLES.COMPANY_ADMIN, ROLES.DIRECTOR, ROLES.HEAD_PROJECT_MANAGER, ROLES.PROJECT_MANAGER, ROLES.QA_INSPECTOR, ROLES.CONTRACTOR, ROLES.SITE_SUPERVISOR, ROLES.CLIENT_OWNER_VIEWER, ROLES.ACCOUNTANT_COST_CONTROLLER, ROLES.SAFETY_OFFICER]}><ProjectTasks /></ProtectedRoute>} />
           <Route path="*" element={<AppRedirect />} />
         </Routes>
       </AuthProvider>
