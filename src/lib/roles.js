@@ -47,6 +47,8 @@ export const PROJECT_CREATE_ROLES = [
   ROLES.PROJECT_MANAGER,
 ]
 
+export const MANAGEMENT_ROLES = PROJECT_CREATE_ROLES
+
 export const ROLE_HOME_ROUTES = {
   [ROLES.PLATFORM_ADMIN]: '/admin',
   [ROLES.COMPANY_ADMIN]: '/dashboard',
